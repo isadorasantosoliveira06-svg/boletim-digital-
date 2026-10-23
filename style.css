@@ -1,0 +1,140 @@
+/* --- CONFIGURAÇÕES GERAIS --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f8f9fa;
+  color: #333333;
+  padding-bottom: 40px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* --- CABEÇALHO --- */
+.header {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe); /* Tons de Roxo */
+  color: #ffffff;
+  padding: 30px 20px;
+  text-align: center;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 5px;
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* --- CARDS DE RESUMO --- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+  margin-bottom: 35px;
+}
+
+.card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  border-top: 5px solid transparent; /* Linha colorida no topo */
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+/* Linha Roxa no topo dos cards ímpares */
+.card-purple {
+  border-top-color: #6c5ce7;
+}
+
+/* Linha Rosa no topo dos cards pares */
+.card-pink {
+  border-top-color: #fd79a8;
+}
+
+.card h3 {
+  font-size: 0.9rem;
+  color: #666666;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card p {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #2d3436;
+}
+
+.card .subtext {
+  font-size: 0.8rem;
+  color: #00b894;
+  display: block;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* --- TABELA RESPONSIVA --- */
+.table-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow-x: auto; /* Permite rolar pro lado no celular */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 650px; /* Garante tamanho mínimo para telas pequenas */
+}
+
+th, td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #eef2f5;
+}
+
+th {
+  background-color: #f1f2f6;
+  color: #485460;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Destaques das Situações */
+.situacao-bom {
+  color: #00b894;
+  font-weight: bold;
+}
+
+.situacao-atencao {
+  color: #d63031;
+  font-weight: bold;
+}
+
+.situacao-indisponivel {
+  color: #b2bec3;
+  font-style: italic;
+}
