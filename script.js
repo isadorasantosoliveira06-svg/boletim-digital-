@@ -508,3 +508,135 @@ async function abrirBoletim() {
 
     document.getElementById("area-pin").style.display = "none";
     document.getElementById("conteudo-boletim").style.display = "block";
+    
+    construirBoletim();
+
+  } catch (erro) {
+    msgPin.style.color = "#d63031";
+    msgPin.textContent = "Não foi possível conectar ao servidor. Tente novamente.";
+  }
+}
+
+// --- MODO EDIÇÃO ---
+function ativarEdicao() {
+  modoEdicao = true;
+  document.getElementById("btn-editar").style.display = "none";
+  document.getElementById("btn-salvar").style.display = "inline-block";
+  document.getElementById("btn-cancelar").style.display = "inline-block";
+  document.getElementById("msg-edicao").textContent = "";
+  construirBoletim();
+}
+
+function cancelarEdicao() {
+  modoEdicao = false;
+  document.getElementById("btn-editar").style.display = "inline-block";
+  document.getElementById("btn-salvar").style.display = "none";
+  document.getElementById("btn-cancelar").style.display = "none";
+  document.getElementById("msg-edicao").textContent = "";
+  construirBoletim();
+}
+
+// --- SALVAR ALTERAÇÕES VIA API ---
+async function salvarAlteracoes() {
+  const msgEdicao = document.getElementById("msg-edicao");
+  msgEdicao.style.color = "#2d3436";
+  msgEdicao.textContent = "Salvando...";
+
+  let temErro = false;
+  const novasDisciplinas = [];
+
+  for (let i = 0; i < dadosDisciplinas.length; i++) {
+    const discOriginal = dadosDisciplinas[i];
+
+    const inputN1 = document.getElementById(`edit-n1-${i}`);
+    const inputN2 = document.getElementById(`edit-n2-${i}`);
+    const inputN3 = document.getElementById(`edit-n3-${i}`);
+
+    const inputF1 = document.getElementById(`edit-f1-${i}`);
+    const inputF2 = document.getElementById(`edit-f2-${i}`);
+    const inputF3 = document.getElementById(`edit-f3-${i}`);
+
+    [inputN1, inputN2, inputN3, inputF1, inputF2, inputF3].forEach(inp => inp && inp.classList.remove("invalido"));
+
+    const resN1 = validarNotaEditada(inputN1.value);
+    const resN2 = validarNotaEditada(inputN2.value);
+    const resN3 = validarNotaEditada(inputN3.value);
+
+    const resF1 = validarFaltaEditada(inputF1.value);
+    const resF2 = validarFaltaEditada(inputF2.value);
+    const resF3 = validarFaltaEditada(inputF3.value);
+
+    if (!resN1.valido) { inputN1.classList.add("invalido"); temErro = true; }
+    if (!resN2.valido) { inputN2.classList.add("invalido"); temErro = true; }
+    if (!resN3.valido) { inputN3.classList.add("invalido"); temErro = true; }
+
+    if (!resF1.valido) { inputF1.classList.add("invalido"); temErro = true; }
+    if (!resF2.valido) { inputF2.classList.add("invalido"); temErro = true; }
+    if (!resF3.valido) { inputF3.classList.add("invalido"); temErro = true; }
+
+    if (!temErro) {
+      novasDisciplinas.push({
+        disciplina: discOriginal.disciplina,
+        tri1: resN1.valor,
+        tri2: resN2.valor,
+        tri3: resN3.valor,
+        faltas: [resF1.valor, resF2.valor, resF3.valor]
+      });
+    }
+  }
+
+  if (temErro) {
+    msgEdicao.style.color = "#d63031";
+    msgEdicao.textContent = "Verifique os campos destacados em vermelho.";
+    return;
+  }
+
+  try {
+    const resposta = await fetch(`${CONFIG_ALUNO.apiUrl}/api/v1/boletins/salvar`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        turma: CONFIG_ALUNO.turma,
+        numero_chamada: CONFIG_ALUNO.numeroChamada,
+        pin: pinSessao,
+        dados: {
+          disciplinas: novasDisciplinas
+        }
+      })
+    });
+
+    if (!resposta.ok) {
+      msgEdicao.style.color = "#d63031";
+      msgEdicao.textContent = "Erro ao salvar alterações. Tente novamente.";
+      return;
+    }
+
+    dadosDisciplinas = novasDisciplinas;
+
+    modoEdicao = false;
+    document.getElementById("btn-editar").style.display = "inline-block";
+    document.getElementById("btn-salvar").style.display = "none";
+    document.getElementById("btn-cancelar").style.display = "none";
+
+    msgEdicao.style.color = "#00b894";
+    msgEdicao.textContent = "Dados salvos com sucesso.";
+
+    construirBoletim();
+
+  } catch (erro) {
+    msgEdicao.style.color = "#d63031";
+    msgEdicao.textContent = "Não foi possível conectar ao servidor para salvar.";
+  }
+}
+
+// --- EVENTOS INICIAIS ---
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("btn-entrar").addEventListener("click", abrirBoletim);
+  document.getElementById("input-pin").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") abrirBoletim();
+  });
+
+  document.getElementById("btn-editar").addEventListener("click", ativarEdicao);
+  document.getElementById("btn-salvar").addEventListener("click", salvarAlteracoes);
+  document.getElementById("btn-cancelar").addEventListener("click", cancelarEdicao);
+});
