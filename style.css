@@ -256,3 +256,81 @@ tr:hover {
   border-color: #d63031;
   background-color: #ff767522;
 }
+
+/* --- ÁREA DOS GRÁFICOS --- */
+.area-graficos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 35px;
+}
+
+.grafico-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.grafico-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.grafico-card h2 {
+  font-size: 1rem;
+  color: #2d3436;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.grafico-header h2 {
+  margin-bottom: 0;
+}
+
+.grafico-container {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 260px;
+}
+
+.grafico-container-barras {
+  min-height: 420px;
+}
+
+/* Destaque visual para situação de Perigo */
+.grafico-card-critico {
+  border-color: #d63031;
+  box-shadow: 0 4px 14px rgba(214, 48, 49, 0.15);
+}
+
+.badge-perigo {
+  background-color: #d63031;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* RESPONSIVIDADE DOS GRÁFICOS */
+@media (max-width: 992px) {
+  .area-graficos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .area-graficos {
+    grid-template-columns: 1fr;
+  }
+}

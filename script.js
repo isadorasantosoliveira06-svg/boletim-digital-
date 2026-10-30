@@ -30,6 +30,11 @@ let dadosDisciplinas = [
   { disciplina: "Práticas Experimentais", tri1: 58, tri2: "6,2", tri3: 6.4, faltas: [1, 1, 1] }
 ];
 
+// --- INSTÂNCIAS DOS GRÁFICOS ---
+let graficoMedias = null;
+let graficoEvolucao = null;
+let graficoFaltas = null;
+
 // --- FUNÇÃO PARA NORMALIZAR NOTAS ANTIGAS / LOCAIS (0 a 10) ---
 function normalizarNota(valor) {
   if (valor === null || valor === undefined || valor === "") {
@@ -73,6 +78,227 @@ function validarFaltaEditada(strValor) {
     return { valido: true, valor: num };
   }
   return { valido: false };
+}
+
+// --- FUNÇÕES EXCLUSIVAS DE LEITURA E CÁLCULO PARA OS GRÁFICOS ---
+
+function atualizarGraficoMedias() {
+  const canvas = document.getElementById("graficoMediasDisciplinas");
+  if (!canvas) return;
+
+  const labels = [];
+  const dadosMedias = [];
+
+  dadosDisciplinas.forEach(item => {
+    labels.push(item.disciplina);
+    const n1 = normalizarNota(item.tri1);
+    const n2 = normalizarNota(item.tri2);
+    const n3 = normalizarNota(item.tri3);
+
+    const notasValidas = [n1, n2, n3].filter(n => n !== null);
+
+    if (notasValidas.length > 0) {
+      const soma = notasValidas.reduce((a, b) => a + b, 0);
+      const media = soma / notasValidas.length;
+      dadosMedias.push(Number(media.toFixed(1)));
+    } else {
+      dadosMedias.push(null);
+    }
+  });
+
+  if (graficoMedias) {
+    graficoMedias.destroy();
+  }
+
+  graficoMedias = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Média Atual",
+        data: dadosMedias,
+        backgroundColor: "#6c5ce7",
+        borderRadius: 4
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          min: 0,
+          max: 10,
+          grid: { color: "#eef2f5" }
+        },
+        y: {
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const val = context.raw;
+              if (val === null || val === undefined) return " Sem nota";
+              return ` Média: ${val.toString().replace(".", ",")}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function atualizarGraficoEvolucao() {
+  const canvas = document.getElementById("graficoEvolucaoTrimestres");
+  if (!canvas) return;
+
+  const notasTri1 = [];
+  const notasTri2 = [];
+  const notasTri3 = [];
+
+  dadosDisciplinas.forEach(item => {
+    const n1 = normalizarNota(item.tri1);
+    const n2 = normalizarNota(item.tri2);
+    const n3 = normalizarNota(item.tri3);
+
+    if (n1 !== null) notasTri1.push(n1);
+    if (n2 !== null) notasTri2.push(n2);
+    if (n3 !== null) notasTri3.push(n3);
+  });
+
+  const m1 = notasTri1.length > 0 ? Number((notasTri1.reduce((a, b) => a + b, 0) / notasTri1.length).toFixed(1)) : null;
+  const m2 = notasTri2.length > 0 ? Number((notasTri2.reduce((a, b) => a + b, 0) / notasTri2.length).toFixed(1)) : null;
+  const m3 = notasTri3.length > 0 ? Number((notasTri3.reduce((a, b) => a + b, 0) / notasTri3.length).toFixed(1)) : null;
+
+  if (graficoEvolucao) {
+    graficoEvolucao.destroy();
+  }
+
+  graficoEvolucao = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: ["1º Tri", "2º Tri", "3º Tri"],
+      datasets: [{
+        label: "Média Geral",
+        data: [m1, m2, m3],
+        borderColor: "#fd79a8",
+        backgroundColor: "rgba(253, 121, 168, 0.15)",
+        borderWidth: 3,
+        fill: true,
+        tension: 0.2,
+        pointBackgroundColor: "#fd79a8",
+        pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          max: 10,
+          grid: { color: "#eef2f5" }
+        },
+        x: {
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const val = context.raw;
+              if (val === null || val === undefined) return " Sem dados";
+              return ` Média: ${val.toString().replace(".", ",")}`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function atualizarGraficoFaltas() {
+  const canvas = document.getElementById("graficoFaltasTrimestres");
+  if (!canvas) return;
+
+  let faltasTri1 = 0;
+  let faltasTri2 = 0;
+  let faltasTri3 = 0;
+
+  dadosDisciplinas.forEach(item => {
+    const f1 = Array.isArray(item.faltas) ? (item.faltas[0] ?? 0) : 0;
+    const f2 = Array.isArray(item.faltas) ? (item.faltas[1] ?? 0) : 0;
+    const f3 = Array.isArray(item.faltas) ? (item.faltas[2] ?? 0) : 0;
+
+    faltasTri1 += f1;
+    faltasTri2 += f2;
+    faltasTri3 += f3;
+  });
+
+  const totalFaltasAcumuladas = faltasTri1 + faltasTri2 + faltasTri3;
+  const LIMITE_REFERENCIA_INTERNA = 350;
+
+  const badgePerigo = document.getElementById("badge-perigo-faltas");
+  const cardFaltas = document.getElementById("card-grafico-faltas");
+
+  if (totalFaltasAcumuladas >= LIMITE_REFERENCIA_INTERNA) {
+    if (badgePerigo) badgePerigo.style.display = "inline-block";
+    if (cardFaltas) cardFaltas.classList.add("grafico-card-critico");
+  } else {
+    if (badgePerigo) badgePerigo.style.display = "none";
+    if (cardFaltas) cardFaltas.classList.remove("grafico-card-critico");
+  }
+
+  if (graficoFaltas) {
+    graficoFaltas.destroy();
+  }
+
+  graficoFaltas = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: ["1º Tri", "2º Tri", "3º Tri"],
+      datasets: [{
+        label: "Faltas",
+        data: [faltasTri1, faltasTri2, faltasTri3],
+        backgroundColor: "#00b894",
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: "#eef2f5" }
+        },
+        x: {
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return ` ${context.raw} faltas`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function atualizarGraficos() {
+  atualizarGraficoMedias();
+  atualizarGraficoEvolucao();
+  atualizarGraficoFaltas();
 }
 
 // --- FUNÇÃO PARA CONSTRUIR E RENDERIZAR O BOLETIM ---
@@ -217,6 +443,9 @@ function construirBoletim() {
   document.getElementById("card-faltas").textContent = totalFaltasGeral;
   document.getElementById("card-bom-desempenho").textContent = totalBomDesempenho;
   document.getElementById("card-atencao").textContent = totalAtencao;
+
+  // Atualização dos gráficos em modo leitura
+  atualizarGraficos();
 }
 
 // --- PROCESSAR DADOS RECEBIDOS DA API ---
@@ -279,135 +508,3 @@ async function abrirBoletim() {
 
     document.getElementById("area-pin").style.display = "none";
     document.getElementById("conteudo-boletim").style.display = "block";
-    
-    construirBoletim();
-
-  } catch (erro) {
-    msgPin.style.color = "#d63031";
-    msgPin.textContent = "Não foi possível conectar ao servidor. Tente novamente.";
-  }
-}
-
-// --- MODO EDIÇÃO ---
-function ativarEdicao() {
-  modoEdicao = true;
-  document.getElementById("btn-editar").style.display = "none";
-  document.getElementById("btn-salvar").style.display = "inline-block";
-  document.getElementById("btn-cancelar").style.display = "inline-block";
-  document.getElementById("msg-edicao").textContent = "";
-  construirBoletim();
-}
-
-function cancelarEdicao() {
-  modoEdicao = false;
-  document.getElementById("btn-editar").style.display = "inline-block";
-  document.getElementById("btn-salvar").style.display = "none";
-  document.getElementById("btn-cancelar").style.display = "none";
-  document.getElementById("msg-edicao").textContent = "";
-  construirBoletim();
-}
-
-// --- SALVAR ALTERAÇÕES VIA API ---
-async function salvarAlteracoes() {
-  const msgEdicao = document.getElementById("msg-edicao");
-  msgEdicao.style.color = "#2d3436";
-  msgEdicao.textContent = "Salvando...";
-
-  let temErro = false;
-  const novasDisciplinas = [];
-
-  for (let i = 0; i < dadosDisciplinas.length; i++) {
-    const discOriginal = dadosDisciplinas[i];
-
-    const inputN1 = document.getElementById(`edit-n1-${i}`);
-    const inputN2 = document.getElementById(`edit-n2-${i}`);
-    const inputN3 = document.getElementById(`edit-n3-${i}`);
-
-    const inputF1 = document.getElementById(`edit-f1-${i}`);
-    const inputF2 = document.getElementById(`edit-f2-${i}`);
-    const inputF3 = document.getElementById(`edit-f3-${i}`);
-
-    [inputN1, inputN2, inputN3, inputF1, inputF2, inputF3].forEach(inp => inp && inp.classList.remove("invalido"));
-
-    const resN1 = validarNotaEditada(inputN1.value);
-    const resN2 = validarNotaEditada(inputN2.value);
-    const resN3 = validarNotaEditada(inputN3.value);
-
-    const resF1 = validarFaltaEditada(inputF1.value);
-    const resF2 = validarFaltaEditada(inputF2.value);
-    const resF3 = validarFaltaEditada(inputF3.value);
-
-    if (!resN1.valido) { inputN1.classList.add("invalido"); temErro = true; }
-    if (!resN2.valido) { inputN2.classList.add("invalido"); temErro = true; }
-    if (!resN3.valido) { inputN3.classList.add("invalido"); temErro = true; }
-
-    if (!resF1.valido) { inputF1.classList.add("invalido"); temErro = true; }
-    if (!resF2.valido) { inputF2.classList.add("invalido"); temErro = true; }
-    if (!resF3.valido) { inputF3.classList.add("invalido"); temErro = true; }
-
-    if (!temErro) {
-      novasDisciplinas.push({
-        disciplina: discOriginal.disciplina,
-        tri1: resN1.valor,
-        tri2: resN2.valor,
-        tri3: resN3.valor,
-        faltas: [resF1.valor, resF2.valor, resF3.valor]
-      });
-    }
-  }
-
-  if (temErro) {
-    msgEdicao.style.color = "#d63031";
-    msgEdicao.textContent = "Verifique os campos destacados em vermelho.";
-    return;
-  }
-
-  try {
-    const resposta = await fetch(`${CONFIG_ALUNO.apiUrl}/api/v1/boletins/salvar`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        turma: CONFIG_ALUNO.turma,
-        numero_chamada: CONFIG_ALUNO.numeroChamada,
-        pin: pinSessao,
-        dados: {
-          disciplinas: novasDisciplinas
-        }
-      })
-    });
-
-    if (!resposta.ok) {
-      msgEdicao.style.color = "#d63031";
-      msgEdicao.textContent = "Erro ao salvar alterações. Tente novamente.";
-      return;
-    }
-
-    dadosDisciplinas = novasDisciplinas;
-
-    modoEdicao = false;
-    document.getElementById("btn-editar").style.display = "inline-block";
-    document.getElementById("btn-salvar").style.display = "none";
-    document.getElementById("btn-cancelar").style.display = "none";
-
-    msgEdicao.style.color = "#00b894";
-    msgEdicao.textContent = "Dados salvos com sucesso.";
-
-    construirBoletim();
-
-  } catch (erro) {
-    msgEdicao.style.color = "#d63031";
-    msgEdicao.textContent = "Não foi possível conectar ao servidor para salvar.";
-  }
-}
-
-// --- EVENTOS INICIAIS ---
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("btn-entrar").addEventListener("click", abrirBoletim);
-  document.getElementById("input-pin").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") abrirBoletim();
-  });
-
-  document.getElementById("btn-editar").addEventListener("click", ativarEdicao);
-  document.getElementById("btn-salvar").addEventListener("click", salvarAlteracoes);
-  document.getElementById("btn-cancelar").addEventListener("click", cancelarEdicao);
-});

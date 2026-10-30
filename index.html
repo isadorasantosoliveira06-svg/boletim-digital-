@@ -68,6 +68,33 @@
         </div>
       </section>
 
+      <!-- Seção dos Gráficos -->
+      <section class="area-graficos">
+        <article class="grafico-card">
+          <h2>Média por disciplina</h2>
+          <div class="grafico-container grafico-container-barras">
+            <canvas id="graficoMediasDisciplinas"></canvas>
+          </div>
+        </article>
+
+        <article class="grafico-card">
+          <h2>Evolução da média geral</h2>
+          <div class="grafico-container">
+            <canvas id="graficoEvolucaoTrimestres"></canvas>
+          </div>
+        </article>
+
+        <article class="grafico-card" id="card-grafico-faltas">
+          <div class="grafico-header">
+            <h2>Faltas por trimestre</h2>
+            <div id="badge-perigo-faltas" class="badge-perigo" style="display: none;">Perigo</div>
+          </div>
+          <div class="grafico-container">
+            <canvas id="graficoFaltasTrimestres"></canvas>
+          </div>
+        </article>
+      </section>
+
       <!-- Seção da Tabela de Disciplinas -->
       <section class="table-container">
         <table>
@@ -91,6 +118,8 @@
 
   </main>
 
+  <!-- Biblioteca Chart.js para renderização de gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Link para o arquivo JavaScript -->
   <script src="script.js"></script>
 </body>
