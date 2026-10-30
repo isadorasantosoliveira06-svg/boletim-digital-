@@ -138,3 +138,121 @@ tr:hover {
   color: #b2bec3;
   font-style: italic;
 }
+
+/* --- ÁREA DE LOGIN E PIN --- */
+.pin-container {
+  background-color: #ffffff;
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  border-top: 5px solid #6c5ce7;
+}
+
+.pin-container h3 {
+  color: #2d3436;
+  margin-bottom: 8px;
+}
+
+.pin-info {
+  color: #636e72;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.pin-form {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.pin-form input {
+  padding: 10px 14px;
+  border: 1px solid #dfe6e9;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 160px;
+  outline: none;
+}
+
+.pin-form input:focus {
+  border-color: #6c5ce7;
+}
+
+.pin-form button {
+  background-color: #6c5ce7;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pin-form button:hover {
+  background-color: #5b4bc4;
+}
+
+.pin-msg {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  min-height: 20px;
+}
+
+/* --- BOTÕES E AÇÕES --- */
+.acoes-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-acao {
+  background-color: #6c5ce7;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-acao:hover {
+  opacity: 0.9;
+}
+
+.btn-salvar {
+  background-color: #00b894;
+}
+
+.btn-cancelar {
+  background-color: #b2bec3;
+}
+
+.msg-edicao {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* ESTILOS DE EDIÇÃO NA TABELA */
+.input-edicao {
+  width: 60px;
+  padding: 6px;
+  border: 1px solid #dfe6e9;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.input-edicao.invalido {
+  border-color: #d63031;
+  background-color: #ff767522;
+}

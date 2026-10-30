@@ -16,54 +16,78 @@
   </header>
 
   <main class="container">
+
+    <!-- Área de Acesso / PIN -->
+    <section class="pin-container" id="area-pin">
+      <h3>Acesso ao Boletim</h3>
+      <p class="pin-info">Turma: <strong>8C</strong> | Chamada: <strong>10</strong></p>
+      <div class="pin-form">
+        <input type="password" id="input-pin" placeholder="Digite seu PIN" maxlength="20">
+        <button type="button" id="btn-entrar">Entrar</button>
+      </div>
+      <p id="pin-mensagem" class="pin-msg"></p>
+    </section>
+
+    <!-- Conteúdo do Boletim (oculto até fazer login) -->
+    <div id="conteudo-boletim" style="display: none;">
+
+      <!-- Seção de Ações (Editar / Salvar) -->
+      <section class="acoes-container">
+        <button type="button" id="btn-editar" class="btn-acao">Alterar dados</button>
+        <button type="button" id="btn-salvar" class="btn-acao btn-salvar" style="display: none;">Salvar alterações</button>
+        <button type="button" id="btn-cancelar" class="btn-acao btn-cancelar" style="display: none;">Cancelar</button>
+        <p id="msg-edicao" class="msg-edicao"></p>
+      </section>
     
-    <!-- Seção dos Cards de Resumo -->
-    <section class="cards-grid">
-      <div class="card card-purple">
-        <h3>Média Geral</h3>
-        <p id="card-media">—</p>
-      </div>
+      <!-- Seção dos Cards de Resumo -->
+      <section class="cards-grid">
+        <div class="card card-purple">
+          <h3>Média Geral</h3>
+          <p id="card-media">—</p>
+        </div>
 
-      <div class="card card-pink">
-        <h3>Total de Faltas</h3>
-        <p id="card-faltas">—</p>
-      </div>
+        <div class="card card-pink">
+          <h3>Total de Faltas</h3>
+          <p id="card-faltas">—</p>
+        </div>
 
-      <div class="card card-purple">
-        <h3>Bom Desempenho</h3>
-        <p id="card-bom-desempenho">—</p>
-      </div>
+        <div class="card card-purple">
+          <h3>Bom Desempenho</h3>
+          <p id="card-bom-desempenho">—</p>
+        </div>
 
-      <div class="card card-pink">
-        <h3>Precisam de Atenção</h3>
-        <p id="card-atencao">—</p>
-      </div>
+        <div class="card card-pink">
+          <h3>Precisam de Atenção</h3>
+          <p id="card-atencao">—</p>
+        </div>
 
-      <div class="card card-purple">
-        <h3>Frequência Geral</h3>
-        <p>92%</p>
-        <span class="subtext">Frequência adequada</span>
-      </div>
-    </section>
+        <div class="card card-purple">
+          <h3>Frequência Geral</h3>
+          <p>92%</p>
+          <span class="subtext">Frequência adequada</span>
+        </div>
+      </section>
 
-    <!-- Seção da Tabela de Disciplinas -->
-    <section class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Disciplina</th>
-            <th>1º Tri</th>
-            <th>2º Tri</th>
-            <th>3º Tri</th>
-            <th>Média</th>
-            <th>Faltas</th>
-            <th>Situação</th>
-          </tr>
-        </thead>
-        <!-- O JavaScript preencherá as linhas aqui automaticamente -->
-        <tbody id="tabela-corpo"></tbody>
-      </table>
-    </section>
+      <!-- Seção da Tabela de Disciplinas -->
+      <section class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Disciplina</th>
+              <th>1º Tri</th>
+              <th>2º Tri</th>
+              <th>3º Tri</th>
+              <th>Média</th>
+              <th>Faltas</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+          <!-- O JavaScript preencherá as linhas aqui automaticamente -->
+          <tbody id="tabela-corpo"></tbody>
+        </table>
+      </section>
+
+    </div>
 
   </main>
 
